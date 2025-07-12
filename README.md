@@ -13,7 +13,7 @@
 ## 🧠 Problem Statement Number 1: Skill Swap Platform
 ## 🎥 Live Demo
 
-Watch the live video here: [Live Video on YouTube](https://youtu.be/x-I_pJcKPXg)
+Watch the live video here: [Live Video on YouTube](https://youtu.be/WqbMyE8Pywc)
 
 ### Overview:
 Develop a Skill Swap Platform — a mini application that enables users to list their skills and request others in return.
