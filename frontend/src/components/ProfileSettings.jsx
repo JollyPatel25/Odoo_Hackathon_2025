@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileSettings() {
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [skillsData, setSkillsData] = useState({});
+  const navigate = useNavigate();
 
   const [offeredCategory, setOfferedCategory] = useState("");
   const [offeredSkill, setOfferedSkill] = useState("");
@@ -14,18 +16,40 @@ export default function ProfileSettings() {
   const [wantedSkill, setWantedSkill] = useState("");
 
   useEffect(() => {
-    const fetchUserAndSkills = async () => {
+    alert("Hello");
+    const token = localStorage.getItem("token");
+    console.log("Checking token:", token); // keep this for debug
+    // if (!token) {
+    // console.error("Fetch error:", err.response?.data || err.message);
+    // toast.error("Session expired. Please login again.");
+    // navigate("/login");
+    // return;
+    // }
+
+
+    const fetchData = async () => {
       try {
-        const userRes = await axios.get("http://localhost:5000/api/user/first");
-        const skillsRes = await axios.get("http://localhost:5000/api/skills");
+        const headers = { Authorization: `Bearer ${token}` };
+
+        // Validate token first
+        await axios.get("http://localhost:5000/api/auth/validate", { headers });
+
+        // Then fetch user and skills
+        const userRes = await axios.get("http://localhost:5000/api/user/me", { headers });
+        const skillsRes = await axios.get("http://localhost:5000/api/skills", { headers });
+
         setUser(userRes.data);
         setSkillsData(skillsRes.data);
       } catch (err) {
-        toast.error("Failed to load data");
+        console.error(err);
+        toast.error("Session expired. Please login again.");
+        localStorage.removeItem("token");
+        navigate("/login");
       }
     };
-    fetchUserAndSkills();
-  }, []);
+
+    fetchData();
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -37,7 +61,13 @@ export default function ProfileSettings() {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/user/${user._id}`, user);
+      const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      await axios.put(`http://localhost:5000/api/user/${user._id}`, user, {
+        headers: { Authorization: `Bearer ${token}` }
+        });
+
       toast.success("Profile updated");
       setEditMode(false);
     } catch (err) {
@@ -68,11 +98,10 @@ export default function ProfileSettings() {
   if (!user) return <p>Loading...</p>;
 
   const skillCategories = Object.keys(skillsData);
-  {console.log("skillsData[offeredCategory]:", skillsData);}
 
   return (
     <div className="profile-settings">
-      <h2>My Profile (Temporary Preview)</h2>
+      <h2>My Profile</h2>
 
       {editMode ? (
         <>
@@ -109,15 +138,11 @@ export default function ProfileSettings() {
               disabled={!offeredCategory}
             >
               <option value="">Select Skill</option>
-                {skillsData && offeredCategory && skillsData[offeredCategory]?.length > 0 &&
-                skillsData[offeredCategory].map((s, i) => (
-                    <option key={i} value={s}>
-                    {s}
-                    </option>
-                ))
-                }
-
-
+              {skillsData[offeredCategory]?.map((s, i) => (
+                <option key={i} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
             <button onClick={() => addSkill("offered")}>Add</button>
           </div>
@@ -152,12 +177,11 @@ export default function ProfileSettings() {
               disabled={!wantedCategory}
             >
               <option value="">Select Skill</option>
-              {wantedCategory &&
-                skillsData[wantedCategory].map((s, i) => (
-                  <option key={i} value={s.name}>
-                    {s.name}
-                  </option>
-                ))}
+              {skillsData[wantedCategory]?.map((s, i) => (
+                <option key={i} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
             <button onClick={() => addSkill("wanted")}>Add</button>
           </div>

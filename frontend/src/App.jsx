@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Navbar from "./components/Navbar"; // ✅ import
+
 
 function ProtectedRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -19,36 +21,20 @@ function ProtectedRoute({ children }) {
       return;
     }
 
-    const controller = new AbortController();
-    let didTimeout = false;
-
-    const timeout = setTimeout(() => {
-      didTimeout = true;
-      controller.abort();
-      setAuthorized(false);
-      setLoading(false);
-    }, 8000);
-
     axios
       .get("http://localhost:5000/api/auth/validate", {
         headers: { Authorization: `Bearer ${token}` },
-        signal: controller.signal,
       })
       .then(() => {
-        if (!didTimeout) {
-          setAuthorized(true);
-        }
+        setAuthorized(true);
       })
       .catch(() => {
         localStorage.removeItem("token");
         setAuthorized(false);
       })
       .finally(() => {
-        clearTimeout(timeout);
         setLoading(false);
       });
-
-    return () => controller.abort();
   }, []);
 
   if (loading) {
@@ -62,20 +48,21 @@ function ProtectedRoute({ children }) {
   return authorized ? children : <Navigate to="/login" replace />;
 }
 
+
 export default function App() {
   return (
     <BrowserRouter>
+    <Navbar /> 
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={
+          <Home />} />
 
         <Route
           path="/myprofile"
           element={
-            // <ProtectedRoute>
               <ProfileSettings />
-            // </ProtectedRoute>
           }
         />
         <Route

@@ -32,6 +32,9 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("Checking token:", token); // keep this for debug
+
     fetchProfiles();
   }, [availabilityFilter, search, searchIn, page]);
 
@@ -44,7 +47,7 @@ export default function Home() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/swap/request",
+        "http://localhost:5000/api/user/requests",
         { toUserId: userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

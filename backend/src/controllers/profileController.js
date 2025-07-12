@@ -1,9 +1,11 @@
-// controllers/profileController.js
-import User from "../models/User.js";
+import User from "../models/User.js"; // ✅ You forgot this import
+
 
 export const getLoggedInUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    console.log("runing");
+    const user = await User.findById(req.userId).select("-password");
+
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
@@ -15,9 +17,9 @@ export const getLoggedInUser = async (req, res) => {
 export const updateLoggedInUser = async (req, res) => {
   try {
     const updates = req.body;
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, updates, {
+    const updatedUser = await User.findByIdAndUpdate(req.userId, updates, {
       new: true,
-    }).select("-password");
+    }).select("-password"); // ✅ fix here
     res.json({ message: "Profile updated successfully", user: updatedUser });
   } catch (err) {
     console.error("[UPDATE PROFILE]", err);
