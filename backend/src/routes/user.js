@@ -10,8 +10,8 @@ const router = express.Router();
 
 router.get("/profiles", getPublicProfiles);
 
-router.get("/me",  getLoggedInUser);
-router.put("/me", updateLoggedInUser);
+router.get("/me", authMiddleware, getLoggedInUser);
+router.put("/me", authMiddleware, updateLoggedInUser);
 router.get('/requests',async (req, res) => {
   const userId = req.user.id;
   const { type } = req.query; // 'pending' or 'sent'

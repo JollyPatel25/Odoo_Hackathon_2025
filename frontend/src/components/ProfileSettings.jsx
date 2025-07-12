@@ -19,12 +19,12 @@ export default function ProfileSettings() {
     alert("Hello");
     const token = localStorage.getItem("token");
     console.log("Checking token:", token); // keep this for debug
-    // if (!token) {
-    // console.error("Fetch error:", err.response?.data || err.message);
-    // toast.error("Session expired. Please login again.");
-    // navigate("/login");
-    // return;
-    // }
+    if (!token) {
+    console.error("Fetch error:", err.response?.data || err.message);
+    toast.error("Session expired. Please login again.");
+    navigate("/login");
+    return;
+    }
 
 
     const fetchData = async () => {
