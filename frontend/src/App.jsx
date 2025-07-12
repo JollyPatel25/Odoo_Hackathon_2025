@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import MyProfile from "./components/MyProfile";
 import Home from "./components/Home";
+import ProfileSettings from "./components/ProfileSettings"; // ✅ new import
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
@@ -24,10 +24,10 @@ function ProtectedRoute({ children }) {
 
     const timeout = setTimeout(() => {
       didTimeout = true;
-      controller.abort(); // abort if backend takes too long
+      controller.abort();
       setAuthorized(false);
       setLoading(false);
-    }, 8000); // wait for 8 seconds max
+    }, 8000);
 
     axios
       .get("http://localhost:5000/api/auth/validate", {
@@ -68,25 +68,27 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <MyProfile />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+        <Route path="/" element={<Home />} />
 
-      {/* ToastContainer added globally once */}
+        <Route
+          path="/myprofile"
+          element={
+            // <ProtectedRoute>
+              <ProfileSettings />
+            // </ProtectedRoute>
+          }
+        />
+        <Route
+        path="*"
+        element={<div>
+          <center>
+            <h1>No Page Found</h1>
+          </center>
+        </div>}
+      ></Route>
+      </Routes>
+      
+
       <ToastContainer position="top-center" autoClose={3000} />
     </BrowserRouter>
   );

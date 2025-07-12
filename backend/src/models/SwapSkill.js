@@ -27,6 +27,6 @@ const swapSkillSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-const SwapSkill = mongoose.model('SwapSkill', swapSkillSchema);
+const SwapSkill = mongoose.model('SwapSkill', swapSkillSchema, 'SwapSkill');
 
 export default SwapSkill;

@@ -25,6 +25,6 @@ const ratingsSchema = new mongoose.Schema({
   comment: String,
 }, { timestamps: true });
 
-const Ratings = mongoose.model('Ratings', ratingsSchema);
+const Ratings = mongoose.model('Ratings', ratingsSchema,'Ratings');
 
 export default Ratings;
