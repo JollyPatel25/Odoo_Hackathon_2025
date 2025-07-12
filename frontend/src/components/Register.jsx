@@ -1,7 +1,7 @@
-// src/pages/Register.jsx
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../pages/Register.css";
 
 export default function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
@@ -35,7 +35,7 @@ export default function Register() {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
+      await axios.post("http://localhost:5000/api/auth/register", {
         name: form.name,
         email: form.email,
         password: form.password,
@@ -48,65 +48,67 @@ export default function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4">Register for Skill Swap</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-1 font-medium">Full Name</label>
+    <div className="register-page">
+      <div className="register-box">
+        <h2>Sign up</h2>
+        <p className="subtitle">Sign up to continue</p>
+
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label>Name</label>
             <input
               name="name"
               type="text"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.name}
               onChange={handleChange}
               required
             />
           </div>
-          <div>
-            <label className="block mb-1 font-medium">Email</label>
+          <div className="input-group">
+            <label>Email</label>
             <input
               name="email"
               type="email"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.email}
               onChange={handleChange}
               required
             />
           </div>
-          <div>
-            <label className="block mb-1 font-medium">Password</label>
+          <div className="input-group">
+            <label>Password</label>
             <input
               name="password"
               type="password"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.password}
               onChange={handleChange}
               required
             />
           </div>
-          <div>
-            <label className="block mb-1 font-medium">Confirm Password</label>
-            <input
-              name="confirm"
-              type="password"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={form.confirm}
-              onChange={handleChange}
-              required
-            />
+          <div className="input-group">
+  <label>Confirm Password</label>
+  <input
+    name="confirm"
+    type="password"
+    value={form.confirm}
+    onChange={handleChange}
+    required
+  />
+</div>
+
+          <button type="submit" className="signup-btn">Sign up</button>
+
+          <div className="remember-me">
+            <input type="checkbox" id="remember" />
+            <label htmlFor="remember"> Remember me</label>
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
-            Register
-          </button>
+
+          
         </form>
-        <p className="text-sm text-center mt-4">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Login here
-          </Link>
-        </p>
       </div>
+
+      <p className="signin-link">
+        Already have an account? <Link to="/login">Sign in</Link>
+      </p>
     </div>
   );
 }
